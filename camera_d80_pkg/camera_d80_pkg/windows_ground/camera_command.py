@@ -12,7 +12,7 @@ Email  : bc697522h04@gmail.com
 """
 
 # ROS2
-from camera_d80_pkg.guc_ros2_controller import GCUController
+from gcu_controller import GCUController
 
 # ---------- (empty) 空命令 ----------
 def empty(controller: GCUController) -> None:
@@ -149,12 +149,12 @@ def control_gimbal(controller: GCUController, pitch: float, yaw: float) -> None:
     print(f"發送 [指令] : [control_gimbal] - 控制雲台, pitch: {pitch}°, yaw: {yaw}°")
     try:
         controller.send_command(
-            command=0x00,            
-            parameters=b'',
+            command=0x00,            # **設定指令代碼為 0x10 代表控制雲台角度**
+            parameters=b'',          # **若有其他參數需求, 可在此填入, 否則空值**
             include_empty_command=True,
             enable_request=True,
-            pitch=pitch,           
-            yaw=yaw
+            pitch=pitch,             # **傳入俯仰角參數(單位：度)**
+            yaw=yaw                  # **傳入偏航角參數(單位：度)**
         )
     except Exception as e:
         print("[control_gimbal] 發送雲台控制指令時出現錯誤:", e)

@@ -14,6 +14,8 @@ find_package(geometry_msgs REQUIRED)
 set(msg_files
 "msg/Camera.msg"
 "msg/CameraData.msg"
+"msg/Laser.msg"
+"msg/LaserData.msg"
 )
 
 rosidl_generate_interfaces(${PROJECT_NAME}

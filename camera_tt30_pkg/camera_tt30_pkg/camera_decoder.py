@@ -10,6 +10,7 @@ email  : bc697522h04@gmail.com
     A. 解析回傳資料
 """
 
+# Python
 import numpy as np
 
 class ReceiveMsg:

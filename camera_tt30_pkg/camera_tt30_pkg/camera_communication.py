@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-File   : socket_communication.py
+File   : camera_communication.py
 author : FantasyWilly
 email  : bc697522h04@gmail.com
 
@@ -41,7 +41,7 @@ class CommunicationController:
     # ---------- (connect) 開啟 TCP連接 ----------
     def connect(self) -> None:
         self.sock.connect((self.ip, self.port))
-        print(f"已連接到 GCU: {self.ip}:{self.port}")
+        print(f"正在連接 GCU: {self.ip}:{self.port}")
 
     # ---------- (disconnect) 關閉 TCP連接 ----------
     def disconnect(self) -> None:

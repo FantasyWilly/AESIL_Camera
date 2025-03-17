@@ -2,5 +2,5 @@ vio_target_position_node:
   ros__parameters:
     initial_lat: 23.4507301
     initial_lon: 120.2861433
-    initial_heading: 0
+    initial_heading: 12
     vio_pose_topic: '/mavros/vision_pose/pose'

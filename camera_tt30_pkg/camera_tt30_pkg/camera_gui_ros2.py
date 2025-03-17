@@ -1,36 +1,66 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 """
-File   : camera_command.py
+File   : camera_gui_ros2.py
 Author : LYX(先驅), FantasyWilly
 Email  : FantasyWilly - bc697522h04@gmail.com
 
 相機型號 : KTG-TT30
-檔案大綱 : 創建簡單 GUI 界面，用於發送相機控制指令，
-           並同時執行背景線程持續發送命令（例如空命令），
-           整體框架採用 AppManager 封裝，主程式只需呼叫即可。
+檔案大綱 : 創建簡單 GUI 界面, 用於發送相機控制指令, 同時接收相機回傳資料發布至 ROS2
+          
 """
 
+# Python
 import time
 import threading
 import tkinter as tk
 
-import camera_pkg.camera_command as cm
-import camera_pkg.camera_loop_command as loop_cm
-from camera_pkg.camera_communication import CommunicationController
-from camera_pkg.camera_decoder import ReceiveMsg
+# ROS2
+import rclpy
+from rclpy.node import Node
 
-# 全域建立連線控制器與解析器物件（若有需要解析資料，可在其他模組中使用）
+# ROS2 自定義消息包
+from camera_msg_pkg.msg import Camera, CameraData
+from camera_msg_pkg.msg import Laser, LaserData
+
+# ROS2 引用 Python 檔 (mine)
+import camera_tt30_pkg.camera_command as cm
+import camera_tt30_pkg.camera_loop_command as loop_cm
+from camera_tt30_pkg.camera_communication import CommunicationController
+from camera_tt30_pkg.camera_decoder import ReceiveMsg
+
 controller = CommunicationController("192.168.144.200", 2000)
 gimbal_msg = ReceiveMsg()
 
-# ----------------- GUI 介面定義 -----------------
+# ----------------------- [CameraFeedbackPublisher] 初始化[Node], 宣告參數, 發布相機回傳資訊 -----------------------
+class CameraFeedbackPublisher(Node):
+    # Node       : camera_feedback_publisher_gui_node
+    # Topic(PUB) : /camera_data_pub
+    # Topic(PUB) : /laser_data_pub
+    def __init__(self):
+        super().__init__('camera_feedback_publisher_gui_node')
+
+        self.declare_parameter('gimbal_step', 50)
+        self.declare_parameter('zoom_duration', 0.3)
+        self.declare_parameter('photo_continous_count', 3)
+
+        self.gimbal_step = self.get_parameter('gimbal_step').get_parameter_value().integer_value
+        self.zoom_duration = self.get_parameter('zoom_duration').get_parameter_value().double_value
+        self.photo_continous_count = self.get_parameter('photo_continous_count').get_parameter_value().integer_value
+
+        self.publisher_camera = self.create_publisher(Camera, '/camera_data_pub', 10)
+        self.publisher_laser  = self.create_publisher(Laser, '/laser_data_pub', 10)
+
+# ----------------------- [CameraControlGUI] 接收 [Node] 節點, 創建 [GUI] 界面 -----------------------
 class CameraControlGUI:
-    def __init__(self, master):
+    def __init__(self, master, ros_node):
         self.master = master
+        self.ros_node = ros_node                    # 傳入 [CameraFeedbackPublisher] 的 [camera_feedback_publisher_gui_node] 節點
         self.master.title("Directional Buttons")
         self.create_widgets()
 
+    # ----------------------- (create_widgets) 創建 [GUI] 容器 -----------------------
     def create_widgets(self):
         # 群組1: Common
         group1_frame = tk.Frame(self.master)
@@ -126,93 +156,105 @@ class CameraControlGUI:
 
     # ----------------- 各群組指令 -----------------
     def on_netural(self):
-        print("[指令]: 一鍵回中")
+        print("[指令]: 一鍵回中", flush=True)
         cm.Command.Netural_command(controller)
 
     def on_down(self):
-        print("[指令]: 一鍵向下")
+        print("[指令]: 一鍵向下", flush=True)
         cm.Command.Down_command(controller)
-
+        
     def on_follow_header(self):
-        print("[指令]: 跟隨機頭")
+        print("[指令]: 跟隨機頭", flush=True)
         cm.Command.FollowHeader_command(controller)
-
+        
     def on_take_photo(self):
-        print("[指令]: 拍一張照片")
+        print("[指令]: 拍一張照片", flush=True)
         cm.Command.Photo_command(controller, 1, 0)
-
+    
     def on_continuous_shooting(self):
-        print("[指令]: 拍三張照片")
-        cm.Command.Photo_command(controller, 2, 3)
+        photo = self.ros_node.photo_continous_count
+        print(f"[指令]: 拍 {photo} 張照片", flush=True)
+        cm.Command.Photo_command(controller, 2, photo)
 
     def on_start_recording(self):
-        print("[指令]: 開始錄影")
+        print("[指令]: 開始錄影", flush=True)
         cm.Command.Video_command(controller, 1)
-
+        
     def on_stop_recording(self):
-        print("[指令]: 結束錄影")
+        print("[指令]: 結束錄影", flush=True)
         cm.Command.Video_command(controller, 2)
 
     def on_zoom_keepin(self):
-        print("[指令]: 持續放大 [控制時間]: 0.25s")
+        zoom_duration = self.ros_node.zoom_duration
+        print(f"[指令]: 持續放大 [控制時間]: {zoom_duration} 秒", flush=True)
         cm.Command.MachineZoom_command(controller, 1)
-        time.sleep(0.25)
+        time.sleep(zoom_duration)
         cm.Command.MachineZoom_command(controller, 3)
-
+    
     def on_zoom_keepout(self):
-        print("[指令]: 持續縮小")
+        zoom_duration = self.ros_node.zoom_duration
+        print(f"[指令]: 持續縮小 [控制時間]: {zoom_duration} 秒", flush=True)
         cm.Command.MachineZoom_command(controller, 2)
-        time.sleep(0.25)
+        time.sleep(zoom_duration)
         cm.Command.MachineZoom_command(controller, 3)
-
+        
     def on_zoom_reset(self):
-        print("[指令]: 恢復1倍")
+        print("[指令]: 恢復1倍", flush=True)
         cm.Command.MachineZoom_command(controller, 4)
-
+        
     def on_zoom_in(self):
-        print("[指令]: 放大2倍")
+        print("[指令]: 放大2倍", flush=True)
         cm.Command.MachineZoom_command(controller, 5)
 
     def on_zoom_out(self):
-        print("[指令]: 縮小2倍")
+        print("[指令]: 縮小2倍", flush=True)
         cm.Command.MachineZoom_command(controller, 6)
-
+        
     def on_laser_close(self):
-        print("[指令]: 關閉雷射")
+        print("[指令]: 關閉雷射", flush=True)
         cm.Command.Laser_command(controller, 0)
-
+        
     def on_laser_open(self):
-        print("[指令]: 打開雷射")
+        print("[指令]: 打開雷射", flush=True)
         cm.Command.Laser_command(controller, 1)
 
     def on_indicator_up(self):
-        print("[指令]: 向上 [控制量]: 2.5度")
-        cm.Command.GimbalControl_command(controller, 0, 25)
+        step = self.ros_node.gimbal_step
+        print(f"[指令]: 向上 [控制量]: {step/10}度", flush=True)
+        cm.Command.GimbalControl_command(controller, 0, step)
 
     def on_indicator_down(self):
-        print("[指令]: 向下 [控制量]: 2.5度")
-        cm.Command.GimbalControl_command(controller, 0, -25)
+        step = self.ros_node.gimbal_step
+        print(f"[指令]: 向下 [控制量]: {step/10}度", flush=True)
+        cm.Command.GimbalControl_command(controller, 0, -step)
 
     def on_indicator_left(self):
-        print("[指令]: 向左 [控制量]: 2.5度")
-        cm.Command.GimbalControl_command(controller, -25, 0)
+        step = self.ros_node.gimbal_step
+        print(f"[指令]: 向左 [控制量]: {step/10}度", flush=True)
+        cm.Command.GimbalControl_command(controller, -step, 0)
 
     def on_indicator_right(self):
-        print("[指令]: 向右 [控制量]: 2.5度")
-        cm.Command.GimbalControl_command(controller, 25, 0)
+        step = self.ros_node.gimbal_step
+        print(f"[指令]: 向右 [控制量]: {step/10}度", flush=True)
+        cm.Command.GimbalControl_command(controller, step, 0)
 
-# ----------------- AppManager: 封裝所有背景線程 -----------------
-class AppManager:
-    def __init__(self, controller):
+# ----------------------- [BackgroundManager] 背景執行的多線程 -----------------------
+class BackgroundManager:
+    def __init__(self):
+        # 初始化連線控制器與解析器
         self.controller = controller
+        self.gimbal_msg = gimbal_msg
+        # 初始化 ROS2 節點
+        rclpy.init()
+        self.ros_node = CameraFeedbackPublisher()
         self.stop_event = threading.Event()
         self.threads = []
 
     def start(self):
-        # (1) 連線與發送雷射測距指令
+        # (1) 連線 & 發送雷射測距指令
         self.controller.connect()
-        print("[開啟]: 雷射測距 (等待 1 秒)")
-        cm.Command.Laser_command(self.controller, 1)
+        # print("[開啟]: 雷射測距 (等待 1 秒)")
+        # cm.Command.Laser_command(self.controller, 1)
         time.sleep(1)
 
         # (2) 啟動 loop_in_background 線程（持續發送空命令）
@@ -223,49 +265,92 @@ class AppManager:
         )
         self.loop_thread.start()
         self.threads.append(self.loop_thread)
-        print("[開啟]: LOOP-CMD")
+        print("[開啟]: LOOP-CMD (等待 1 秒)")
+        print("-----------------------------")
+        time.sleep(1)
 
-        # (3) 啟動背景接收並接收資料線程
-        self.receive_thread = threading.Thread(
-            target=self.receive,
+        # (3) 啟動 ROS2 的 spin 線程，讓節點持續運作
+        self.ros_spin_thread = threading.Thread(
+            target=lambda: rclpy.spin(self.ros_node),
             daemon=True
         )
-        self.receive_thread.start()
-        self.threads.append(self.receive_thread)
-        print("[背景線程] 開始接收並發布相機資料")
+        self.ros_spin_thread.start()
+        self.threads.append(self.ros_spin_thread)
+        print("[ROS2]: 節點啟動 (等待 1 秒)")
+        print("-----------------------------")
+        time.sleep(1)
 
-    def receive(self):
-        for packet in CommunicationController.recv_packets(controller.sock, packet_size=32, header=b'\x4B\x4B'):
+        # (4) 啟動背景接收並發布資料到 ROS2 的線程
+        self.ros_publish_thread = threading.Thread(
+            target=self.receive_and_publish,
+            daemon=True
+        )
+        self.ros_publish_thread.start()
+        self.threads.append(self.ros_publish_thread)
+        print("[背景線程] 開始接收並發布相機資料到 ROS2")
+
+    # ----------------------- (receive_and_publish) 接收相機回傳資料並 傳至 ROS2 -----------------------
+    def receive_and_publish(self):
+        for packet in CommunicationController.recv_packets(self.controller.sock, packet_size=32, header=b'\x4B\x4B'):
             if self.stop_event.is_set():
                 break
-            if gimbal_msg.parse(packet, len(packet), gimbal_msg):
-                print(f"[ROLL]={gimbal_msg.rollAngle} 度, [YAW]={gimbal_msg.yawAngle} 度, [PITCH]={gimbal_msg.pitchAngle} 度")
-                print(f"[TARGET-DIST]={gimbal_msg.targetDist} m")
+            if self.gimbal_msg.parse(packet, len(packet), self.gimbal_msg):
+                camera_data = CameraData()
+                camera_data.rollangle = float(self.gimbal_msg.rollAngle)
+                camera_data.yawangle = float(self.gimbal_msg.yawAngle)
+                camera_data.pitchangle = float(self.gimbal_msg.pitchAngle)
+
+                camera_msg = Camera()
+                camera_msg.data = [camera_data]
+                self.ros_node.publisher_camera.publish(camera_msg)
+                # self.ros_node.get_logger().info(
+                #     f"[發布] Camera 資料: [ROLL]={camera_data.rollangle}, [YAW]={camera_data.yawangle}, [PITCH]={camera_data.pitchangle}"
+                # )
+
+                # -----------------------------------------------------------------------------------------
+
+                target_distance = float(self.gimbal_msg.targetDist)
+                if target_distance > 1500:
+                    # print("超出範圍 (超過 1500) 的資料，忽略:", target_distance)
+                    continue
+                laser_data = LaserData()
+                laser_data.targetdist = target_distance
+
+                laser_msg = Laser()
+                laser_msg.data = [laser_data]
+                self.ros_node.publisher_laser.publish(laser_msg)
+                # self.ros_node.get_logger().info(
+                #     f"[發布] Laser 資料: [TARGET-DIST]={laser_data.targetdist}"
+                # )
+
             else:
                 print("無法解析資料")
-
+            if self.stop_event.is_set():
+                break
             time.sleep(0.05)
-
+    
+    # ---------- (shutdown) 通知所有背景線程停止並等待結束, 再關閉連線與 ROS2 ---------- 
     def shutdown(self):
-        # 通知所有背景線程停止，並等待結束，再關閉連線
         self.stop_event.set()
         for t in self.threads:
             t.join()
         self.controller.disconnect()
+        rclpy.shutdown()
 
-# ----------------- 主要執行序 -----------------
+# ----------------------- [main] 主要執行序 -----------------------
 def main():
+
+    # 建立 AppManager 實例，並啟動所有背景線程
     try:
-        # 建立 AppManager 實例，並啟動背景線程
-        app_manager = AppManager(controller)
-        app_manager.start()
+        background_manager = BackgroundManager()
+        background_manager.start()
     except Exception as e:
         print("初始化錯誤:", e)
         return
 
-    # 啟動 GUI 主迴圈
+    # 啟動 GUI 主迴圈 (root, ROS2節點)
     root = tk.Tk()
-    gui = CameraControlGUI(root)
+    gui = CameraControlGUI(root, background_manager.ros_node)
     try:
         root.mainloop()
     except KeyboardInterrupt:
@@ -273,7 +358,7 @@ def main():
     except Exception as e:
         print("發生例外:", e)
     finally:
-        app_manager.shutdown()
+        background_manager.shutdown()
 
 if __name__ == "__main__":
     main()
