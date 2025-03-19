@@ -66,6 +66,12 @@ def xbox_controller_loop(controller: CommunicationController) -> None:
                 elif joystick.get_button(5):
                     print("R 按鈕按下：結束錄影")
                     cm.Command.Video_command(controller, 2)
+                elif joystick.get_button(6):
+                    print("按鈕按下：開啟雷射測距")
+                    cm.Command.Laser_command(controller, 1)
+                elif joystick.get_button(7):
+                    print("按鈕按下：關閉雷射測距")
+                    cm.Command.Laser_command(controller, 0)
 
             # 處理方向鍵 (hat) 事件, 用以 [控制雲台角度]
             elif event.type == pygame.JOYHATMOTION:
@@ -74,7 +80,7 @@ def xbox_controller_loop(controller: CommunicationController) -> None:
                     pitch = hat[1] * CONTROL_INCREMENT
                     yaw   = hat[0] * CONTROL_INCREMENT
                     print(f"Hat 更新：發送雲台控制指令 -> pitch: {pitch}°, yaw: {yaw}°")
-                    cm.Command.GimbalControl_command(controller, pitch=pitch * 10, yaw=yaw * 10)
+                    cm.Command.GimbalControl_command(controller, pitch_speed=pitch * 10, yaw_speed=yaw * 10)
             
             # 處理觸發器 (axis) 事件，用以控制 [放大縮小]
             elif event.type == pygame.JOYAXISMOTION:

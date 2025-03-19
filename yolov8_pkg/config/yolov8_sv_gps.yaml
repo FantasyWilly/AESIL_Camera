@@ -1,0 +1,9 @@
+yolov8_sv_gps_node:
+  ros__parameters:
+    model_path: "/home/fantasywilly/weight/Competition_2025.pt"
+    device: "cuda:0"
+    imgsz: 640
+    conf_thresh: 0.25
+    camera_source: "rtsp://admin:53373957@192.168.168.108:554/cam/realmonitor?channel=1&subtype=0"
+    rtsp_server_url: "rtsp://192.168.0.230:8554/live/stream"
+    frame_rate: 25

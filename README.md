@@ -1,4 +1,4 @@
-# <div align="center">AESIL - YOLO 教學專案</div>
+# <div align="center">AESIL - Camera</div>
 
 ## <div align="center">Downloads</div>
 
@@ -6,7 +6,7 @@
 
 ```
 cd ~/<your_workspace>/src
-git clone https://github.com/FantasyWilly/AESIL_Camera_Controll.git
+git clone https://github.com/FantasyWilly/AESIL_Camera.git
 ```
 
 ---

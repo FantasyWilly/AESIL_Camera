@@ -2,7 +2,7 @@ import os
 from glob import glob
 from setuptools import find_packages, setup
 
-package_name = 'camera_d80_pkg'
+package_name = 'yolov8_pkg'
 
 setup(
     name=package_name,
@@ -17,18 +17,20 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='fantasywilly',
-    maintainer_email='bc697522h04@gmail.com',
+    maintainer='nvidia',
+    maintainer_email='nvidia@todo.todo',
     description='TODO: Package description',
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'gcu_ros2_main_node = camera_d80_pkg.guc_ros2_main:main',
-            'laser_node = camera_d80_pkg.LRFX00M1LSQ_laser:main',
-            'target_position_node = camera_d80_pkg.camera_laser_dist:main',
-            'vio_target_position_node = camera_d80_pkg.camera_vio_laser_dist:main',
-            'xbox_air_node = camera_d80_pkg.xbox_air:main'
+            'rtsp_ros_node = yolov8_pkg.rtsp_ros2:main',
+            'yolo_ros_node = yolov8_pkg.yolov8_test:main',
+            'yolo_rtsp_ros_node = yolov8_pkg.yolov8_detect:main',
+            'yolov8_mod_node = yolov8_pkg.yolov8_mod:main',
+            'yolov8_sv_node = yolov8_pkg.yolov8_sv:main',
+            'yolov8_sv_gps_node = yolov8_pkg.yolov8_sv_gps:main',
+            'yolov8_sv_gps_save_node = yolov8_pkg.yolov8_sv_gps_save:main',
         ],
     },
 )

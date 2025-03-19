@@ -90,7 +90,9 @@ class GCUController:
         else:
             print(f"接收 [解碼] : roll={parsed['roll']:.2f}, pitch={parsed['pitch']:.2f}, yaw={parsed['yaw']:.2f}")
             if self.ros2_publisher is not None:
-                self.ros2_publisher.publish_data(parsed['roll'], parsed['pitch'], parsed['yaw'])
+
+                ## 呼叫 gcu_ros2_publisher.py 裡的 publish_camera_data
+                self.ros2_publisher.publish_camera_data(parsed['roll'], parsed['pitch'], parsed['yaw'])
 
         # (4) 空命令收尾
         if command != 0x00 or command == 0x00 and (pitch is not None or yaw is not None):
@@ -115,6 +117,9 @@ class GCUController:
             print("解碼失敗:", parsed['error'])
         else:
             # print(f"接收 [解碼] : roll={parsed['roll']:.2f}, pitch={parsed['pitch']:.2f}, yaw={parsed['yaw']:.2f}")
+
             if self.ros2_publisher is not None:
-                self.ros2_publisher.publish_data(parsed['roll'], parsed['pitch'], parsed['yaw'])
+
+                ## 呼叫 gcu_ros2_publisher.py 裡的 publish_camera_data
+                self.ros2_publisher.publish_camera_data(parsed['roll'], parsed['pitch'], parsed['yaw'])
         return response

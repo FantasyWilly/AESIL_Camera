@@ -14,24 +14,29 @@ Email  : bc697522h04@gmail.com
 # ROS2
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import Vector3
+
+# ROS2 自定義消息包
+from camera_msg_pkg.msg import Camera, CameraData
 
 # ---------- [CUPublisher] 初始化[Node], 宣告參數, 發布相機回傳資訊 ----------
 class GCUPublisher(Node):
     def __init__(self):
-        super().__init__('gcu_publisher_node')
-        self.publisher_ = self.create_publisher(Vector3, 'gcu_response', 10)
+        super().__init__('gcu_ros2_publisher_node')
+        self.publisher_camera = self.create_publisher(Camera, '/camera_data_pub', 10)
 
-    # ----------------------- (publish_data) 接收資料 & 發布至ROS2 -----------------------
-    def publish_data(self, roll: float, pitch: float, yaw: float):
-        msg = Vector3()
-        msg.x = roll
-        msg.y = pitch
-        msg.z = yaw
+    # ----------------------- (publish_camera_data) 接收 Camera 資料 & 發布至ROS2 -----------------------
+    def publish_camera_data(self, roll: float, pitch: float, yaw: float):
+        camera_data = CameraData()
+        camera_data.rollangle = roll
+        camera_data.yawangle = yaw
+        camera_data.pitchangle = pitch
 
-        self.publisher_.publish(msg)
-        # self.get_logger().info(f"已發布資料: roll={roll:.2f}, pitch={pitch:.2f}, yaw={yaw:.2f}")
+        camera_msg = Camera()
+        camera_msg.data = [camera_data]
 
+        self.publisher_camera.publish(camera_msg)
+        # self.get_logger().info(f"[發布] Camera 資料: [ROLL]={camera_data.rollangle}, [YAW]={camera_data.yawangle}, [PITCH]={camera_data.pitchangle}")
+        
 # ---------- [main] 主要執行序 ----------
 def main(args=None):
     rclpy.init(args=args)

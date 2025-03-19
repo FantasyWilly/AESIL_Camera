@@ -2,16 +2,18 @@
 # -*- coding: utf-8 -*-
 
 '''
-File   : camera_vio_laser_dist.py
+File   : camera_laser_dist.py
 author : FantasyWilly
-email  : FantasyWilly@gmail.com
+email  : bc697522h04@gmail.com
 
-相機型號 : KTG-TT30
+相機型號 : D-80 Pro
+雷射測距型號 : LRFX00M1LSQ
 檔案大綱 :
-    A. 接收 - 相機＆雲台回傳資料
-    B. 接收 - [vio] 相機定位 (x,y,z)
-    C. 計算 - 目標物經緯度
-    D. 發布 - 目標物經緯度資訊至ROS2
+    A. 接收 - [Camera] (roll, yaw, pitch)
+    B. 接收 - [Laser] 雷射測距距離 (target distance) 
+    C. 接收 - [vio] 相機定位 (x,y,z)
+    D. 計算 - 目標物經緯度
+    E. 發布 - 目標物經緯度資訊至ROS2
 '''
 
 # Python
