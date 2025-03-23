@@ -28,6 +28,7 @@ setup(
             'camera_feedback_publisher_gui_node = camera_tt30_pkg.camera_gui_ros2:main',
             'target_position_node = camera_tt30_pkg.camera_laser_dist:main',
             'vio_target_position_node = camera_tt30_pkg.camera_vio_laser_dist:main',
+            'vio_target_position_heading_node = camera_tt30_pkg.camera_vio_laser_dist_heading:main',
             'xbox_air_node = camera_tt30_pkg.xbox_air:main'
         ],
     },
