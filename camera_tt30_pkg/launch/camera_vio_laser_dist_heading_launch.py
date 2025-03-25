@@ -16,10 +16,10 @@ def generate_launch_description():
 
     return LaunchDescription([
         Node(
-            package='camera_tt30_pkg',                    # package 名稱
-            executable='vio_target_position_node',        # 在 setup.py 裡註冊的執行檔或 entry point 名稱
-            name='vio_target_position_heading_node',      # 對節點重新命名
+            package='camera_tt30_pkg',                              # package 名稱
+            executable='vio_target_position_heading_node',          # 在 setup.py 裡註冊的執行檔或 entry point 名稱
+            name='vio_target_position_heading_node',                # 對節點重新命名
             output='screen',
-            parameters=[config_file_path],                # 指定要讀取的參數檔
+            parameters=[config_file_path],                          # 指定要讀取的參數檔
         )
     ])

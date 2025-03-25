@@ -21,10 +21,10 @@ from gcu_controller import GCUController
 
 
 # ---------- 基本參數 (全域) ----------
-DEVICE_IP = "192.168.0.230"     # Server IP
-DEVICE_PORT = 9999              # Server Port 
+DEVICE_IP = "192.168.168.111"     # Server IP
+DEVICE_PORT = 9999                # Server Port 
 
-CONTROL_INCREMENT = 5.0         # 雲台角度增量 (預設 5 度)
+CONTROL_INCREMENT = 5.0           # 雲台角度增量 (預設 5 度)
 
 # ---------- (xbox_controller_loop) 添加 xbox 循環事件 ----------
 def xbox_controller_loop(controller: GCUController) -> None:
