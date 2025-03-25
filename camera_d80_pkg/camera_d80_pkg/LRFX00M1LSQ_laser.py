@@ -47,21 +47,22 @@ class LaserPublisher(Node):
 # ==========================
 # 連接並選擇串口
 # ==========================
-ports = serial.tools.list_ports.comports()
-portlist = []
-index = 0
-for port, desc, hwid in ports:
-    portlist.append(port)
-    print(str(index) + ") " + desc + "|" + port)
-    index += 1
-if portlist == []:
-    print("No serial ports detected")
-    sys.exit()
+# ports = serial.tools.list_ports.comports()
+# portlist = []
+# index = 0
+# for port, desc, hwid in ports:
+#     portlist.append(port)
+#     print(str(index) + ") " + desc + "|" + port)
+#     index += 1
+# if portlist == []:
+#     print("No serial ports detected")
+#     sys.exit()
 
-portname = input("Please input the number of the desired port: \n")
+# portname = input("Please input the number of the desired port: \n")
+
 try:
     ser = serial.Serial(
-        port=portlist[int(portname)],
+        port='/dev/ttyTHS0',
         baudrate=115200,
         parity=serial.PARITY_NONE,
         stopbits=serial.STOPBITS_ONE,

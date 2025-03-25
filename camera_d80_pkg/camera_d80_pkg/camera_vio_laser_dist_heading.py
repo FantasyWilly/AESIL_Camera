@@ -56,10 +56,9 @@ class TargetPositionNode(Node):
         super().__init__('vio_target_position_heading_node')
 
         # 宣告並讀取初始全域座標與初始航向參數
-        self.declare_parameter('initial_lat', 23.4515351)                     # 初始緯度
-        self.declare_parameter('initial_lon', 120.2862711)                    # 初始經度
+        self.declare_parameter('initial_lat', 23.4515234)                     # 初始緯度
+        self.declare_parameter('initial_lon', 120.2862747)                    # 初始經度
         self.declare_parameter('vio_pose_topic', '/mavros/vision_pose/pose')  # VIO 定位話題名稱
-        23.451539, 120.286275
          
         self.initial_lat = self.get_parameter('initial_lat').get_parameter_value().double_value
         self.initial_lon = self.get_parameter('initial_lon').get_parameter_value().double_value

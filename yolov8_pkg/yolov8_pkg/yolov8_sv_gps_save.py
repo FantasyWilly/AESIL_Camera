@@ -90,15 +90,15 @@ class YoloRtspRosNode(Node):
             history=HistoryPolicy.KEEP_ALL,
         )
 
-        self.declare_parameter('model_path', '/home/fantasywilly/weight/Car_Model.pt')
+        self.declare_parameter('model_path', '/home/nvidia/weight/Car_Model.pt')
         self.declare_parameter('device', 'cuda:0')
         self.declare_parameter('imgsz', 640)
         self.declare_parameter('conf_thresh', 0.5)
-        self.declare_parameter('camera_source', 'rtsp://user:user@192.168.144.108:554/cam/realmonitor?channel=1&subtype=0')
-        self.declare_parameter('rtsp_server_url', 'rtsp://192.168.0.230:8554/live/stream')
-        self.declare_parameter('frame_rate', 30)
-        self.declare_parameter('gps_topic', '/mavros/global_position/global')
-        self.declare_parameter('save_directory', '/home/fantasywilly/Yolov8-Video')
+        self.declare_parameter('camera_source', 'rtsp://user:user@192.168.168.108:554/cam/realmonitor?channel=1&subtype=0')
+        self.declare_parameter('rtsp_server_url', 'rtsp://192.168.168.12:8554/live/stream')
+        self.declare_parameter('frame_rate', 20)
+        self.declare_parameter('gps_topic', '/target_position')
+        self.declare_parameter('save_directory', '/home/nvidia/Yolov8-Video')
         self.declare_parameter('base_filename', 'Yolov8-Recording.mp4')
         
         self.model_path = self.get_parameter('model_path').get_parameter_value().string_value

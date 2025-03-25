@@ -27,7 +27,7 @@ import camera_d80_pkg.gcu_loop as gcu_loop
 CAMERA_IP = "192.168.168.121"       # 相機 IP
 CAMERA_PORT = 2332                  # 相機埠號
 
-PROXY_LISTEN_IP = "192.168.0.230"   # 代理服務監聽的 IP
+PROXY_LISTEN_IP = "0.0.0.0"   # 代理服務監聽的 IP
 PROXY_LISTEN_PORT = 9999            # 代理服務監聽的埠號
 
 ros2_publisher = None
