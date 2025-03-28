@@ -41,7 +41,7 @@ class VideoCapture:
         self.cap = cv2.VideoCapture(camera_source)                                      # 初始化攝影機連線
         self.q = Queue(maxsize=1)                                                       # 建立一個 Queue 用來暫存讀取到的影像 大小限制為 1（只存最新一筆）
         self.stop_thread = False
-        self.thread = threading.Thread(target=self._reader, name="VideoCaptureThread")  # 建立並啟動一個背景執行緒，持續讀取影像
+        self.thread = threading.Thread(target=self._reader, name="VideoCaptureThread")  # 建立並啟動一個背景執行緒, 持續讀取影像
         self.thread.daemon = True
         self.thread.start()
 
@@ -118,7 +118,7 @@ class YoloRtspRosNode(Node):
         self.fps = 0.0
 
         """
-        可選[ROS_Bridge]: 建立 CvBridge 物件，用以轉換 OpenCV 與 ROS 影像格式 
+        可選[ROS_Bridge]: 建立 CvBridge 物件, 用以轉換 OpenCV 與 ROS 影像格式 
         """
         # self.bridge = CvBridge()
 
@@ -132,11 +132,11 @@ class YoloRtspRosNode(Node):
         self.box_annotator = sv.BoxAnnotator()
         self.label_annotator = sv.LabelAnnotator()
 
-        # 建立 ROS2 Publisher，用於發布 BoundingBox 與 CenterBox 訊息
+        # 建立 ROS2 Publisher, 用於發布 BoundingBox 與 CenterBox 訊息
         self.box_pub = self.create_publisher(BoundingBox, "/box", 10)
         self.box_center_pub = self.create_publisher(CenterBox, "/box_center", 10)
 
-        # 建立 ROS2 Subscriber，訂閱 MAVROS 發佈的 GPS (NavSatFix) 資訊
+        # 建立 ROS2 Subscriber, 訂閱 MAVROS 發佈的 GPS (NavSatFix) 資訊
         self.gps_sub = self.create_subscription(
             NavSatFix,
             self.gps_topic,
@@ -144,9 +144,9 @@ class YoloRtspRosNode(Node):
             qos_profile=qos
         )
 
-        # 建立一個暫存器存放最新的飛機經緯度資料，並使用鎖來確保線程安全
+        # 建立一個暫存器存放最新的飛機經緯度資料, 並使用鎖來確保線程安全
         self.gps_lock = threading.Lock()
-        self.current_gps = None  # 初始為 None，待收到第一筆資料後更新
+        self.current_gps = None  # 初始為 None, 待收到第一筆資料後更新
 
         # 初始化攝影機
         self.cap = VideoCapture(self.camera_source)
@@ -157,11 +157,11 @@ class YoloRtspRosNode(Node):
         self.frame_queue = Queue(maxsize=1)
         self.result_queue = Queue(maxsize=1)
 
-        # 開啟子執行緒，分別執行 YOLO 推論與結果發布
+        # 開啟子執行緒, 分別執行 YOLO 推論與結果發布
         threading.Thread(target=self.yolo_predict, name="YoloPredictThread").start()
         threading.Thread(target=self.publish_results, name="PublishResultsThread").start()
 
-        # 啟動 FFmpeg 進程，負責串流標註後的影像
+        # 啟動 FFmpeg 進程, 負責串流標註後的影像
         self.ffmpeg_rtsp_process = self.setup_rtsp_ffmpeg_process(width, height)
         self.ffmpeg_file_process = self.setup_file_ffmpeg_process(width, height)
 
@@ -173,13 +173,13 @@ class YoloRtspRosNode(Node):
         directory, filename = os.path.split(base_path)
         name, ext = os.path.splitext(filename)
 
-        # 若儲存目錄不存在，則建立目錄
+        # 若儲存目錄不存在, 則建立目錄
         if not os.path.exists(directory):
             os.makedirs(directory)
         counter = 1
         candidate = base_path
 
-        # 檢查檔案是否存在，若存在則加上後綴
+        # 檢查檔案是否存在, 若存在則加上後綴
         while os.path.exists(candidate):
             candidate = os.path.join(directory, f"{name}_{counter:02d}{ext}")
             counter += 1
@@ -194,7 +194,7 @@ class YoloRtspRosNode(Node):
     # ---------- (setup_rtsp_ffmpeg_process) 啟動 [RTSP] FFmpeg 進程 ----------
     def setup_rtsp_ffmpeg_process(self, width, height):
         rtsp_command = (
-            'ffmpeg -y '                            # 若檔案已存在則自動覆蓋（推流情況通常不會寫入檔案，但此處保險起見）
+            'ffmpeg -y '                            # 若檔案已存在則自動覆蓋（推流情況通常不會寫入檔案, 但此處保險起見）
             '-f rawvideo -pixel_format bgr24 '      # 指定輸入影像格式與色彩空間
             f'-video_size {width}x{height} '        # 指定影像尺寸
             f'-framerate {self.frame_rate} '        # 指定影像幀率
@@ -223,7 +223,7 @@ class YoloRtspRosNode(Node):
     def setup_file_ffmpeg_process(self, width, height):
         output_file = self.generate_unique_filename()
         file_command = (
-            'ffmpeg -y '                            # -y 表示自動覆蓋，但這裡檔名唯一通常不會衝突
+            'ffmpeg -y '                            # -y 表示自動覆蓋, 但這裡檔名唯一通常不會衝突
             '-f rawvideo -pixel_format bgr24 '      # 設定輸入原始影像格式
             f'-video_size {width}x{height} '        # 指定影像尺寸
             f'-framerate {self.frame_rate} '        # 指定影像幀率
@@ -268,10 +268,10 @@ class YoloRtspRosNode(Node):
                 # 將 YOLO 結果轉換成 Detections 物件
                 detections = sv.Detections.from_ultralytics(results[0])
                 
-                # 使用 ByteTrack 更新追蹤器，取得帶有 tracker_id 的偵測結果
+                # 使用 ByteTrack 更新追蹤器, 取得帶有 tracker_id 的偵測結果
                 tracked_detections = self.tracker.update_with_detections(detections=detections)
 
-                # 將 (frame, tracked_detections) 放入 Queue，僅保留最新一筆
+                # 將 (frame, tracked_detections) 放入 Queue, 僅保留最新一筆
                 if not self.result_queue.empty():
                     self.result_queue.get_nowait()
                 self.result_queue.put((frame, tracked_detections))
@@ -292,11 +292,26 @@ class YoloRtspRosNode(Node):
 
     # ----------------------- (publish_results) 發布 [YOLO] 影像辨識結果-----------------------
     def publish_results(self):
+
+        last_frame_time = time.time()
         while rclpy.ok():
             try:
                 frame, detections = self.result_queue.get(timeout=1)
+                last_frame_time = time.time()
             except Empty:
-                self.get_logger().debug("publish_results: 1秒內未取得資料 continue...")
+                if time.time() - last_frame_time > 5:
+                    self.get_logger().warning("連續5秒未收到影像, 平滑結束目前錄影進程")
+                    try:
+                        self.ffmpeg_file_process.stdin.flush()  
+                    except Exception as e:
+                        self.get_logger().error(f"flush 失敗: {e}")
+                    self.ffmpeg_file_process.stdin.close()      
+                    self.ffmpeg_file_process.wait()            
+
+                    width, height = self.cap.get_frame_size()
+                    self.ffmpeg_file_process = self.setup_file_ffmpeg_process(width, height)
+
+                    last_frame_time = time.time()
                 continue
 
             try:
@@ -342,15 +357,23 @@ class YoloRtspRosNode(Node):
                     self.ffmpeg_rtsp_process.stdin.write(annotated_frame.tobytes())
                 except (BrokenPipeError, IOError) as e:
                     self.get_logger().error(f"RTSP FFmpeg 寫入錯誤: {e}, 正在重啟 RTSP FFmpeg 進程...")
+                    try:
+                        self.ffmpeg_rtsp_process.stdin.flush()
+                    except Exception:
+                        pass
                     self.ffmpeg_rtsp_process.stdin.close()
                     self.ffmpeg_rtsp_process.wait()
                     self.ffmpeg_rtsp_process = self.setup_rtsp_ffmpeg_process(annotated_frame.shape[1], annotated_frame.shape[0])
 
-                # 將標註後的影像推送到 [MP4] 存檔的 FFmpeg 進程
+                # **寫入檔案儲存的 FFmpeg 進程**
                 try:
                     self.ffmpeg_file_process.stdin.write(annotated_frame.tobytes())
                 except (BrokenPipeError, IOError) as e:
                     self.get_logger().error(f"File FFmpeg 寫入錯誤: {e}, 正在重啟 File FFmpeg 進程...")
+                    try:
+                        self.ffmpeg_file_process.stdin.flush()
+                    except Exception:
+                        pass
                     self.ffmpeg_file_process.stdin.close()
                     self.ffmpeg_file_process.wait()
                     self.ffmpeg_file_process = self.setup_file_ffmpeg_process(annotated_frame.shape[1], annotated_frame.shape[0])
