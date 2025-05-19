@@ -18,7 +18,7 @@ git clone https://github.com/FantasyWilly/AESIL_Camera.git
 
 ***Step2* - 編譯工作空間**
 ```bash
-colon build
+colcon build
 source ~/.bashrc
 ```
 ---
@@ -46,7 +46,7 @@ source ~/.bashrc
   - **ROS2 Running - (Optional)**
 
     ```bash
-    ros2 run camera_tt30_pkg camera_feedback_publisher_gui_node
+    ros2 run camera_tt30_pkg camera_gui_ros2_node
     ```
 
     `Node:` gcu_ros2_main_node
@@ -58,7 +58,7 @@ source ~/.bashrc
   - **ROS2 Launch - (Optional)**
 
     ```bash
-    ros2 launch camera_tt30_pkg camera_gui_ros2_launch.py
+    ros2 launch camera_tt30_pkg xbox_air_launch.py
     ```
 
     - **Config**
@@ -83,7 +83,7 @@ source ~/.bashrc
     ⚠️ 記得修改檔案的 `Server` IP, Port 且 在同網域底下
 
     ```bash
-    python3 camera_tt30_pkg/camera_tt30_pkg/xbox_ground.py
+    python3 camera_tt30_pkg/camera_tt30_pkg/linux_ground/linux_xbox_ground.py
     ```
 
   - **Windows - [ 地面端 ] Xbox Control**
@@ -91,7 +91,7 @@ source ~/.bashrc
     ⚠️ 記得修改檔案的 `Server` IP, Port 且 在同網域底下
 
     ```bash
-    python3 camera_tt30_pkg/camera_tt30_pkg/windows_ground/xbox_ground.py
+    python3 camera_tt30_pkg/camera_tt30_pkg/windows_ground/windows_xbox_ground.py
     ```
 
     ---

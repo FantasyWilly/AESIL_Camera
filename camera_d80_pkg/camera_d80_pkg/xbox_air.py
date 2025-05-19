@@ -19,9 +19,9 @@ import time
 
 # ROS2
 import rclpy
-from camera_d80_pkg.gcu_ros2_publisher import GCUPublisher
-from camera_d80_pkg.guc_ros2_controller import GCUController
-import camera_d80_pkg.gcu_loop as gcu_loop
+from lib.gcu_ros2_publisher import GCUPublisher
+from lib.gcu_ros2_controller import GCUController
+import lib.gcu_loop as gcu_loop
 
 # ---------- 基本參數(全域參數) ----------
 CAMERA_IP = "192.168.168.121"       # 相機 IP

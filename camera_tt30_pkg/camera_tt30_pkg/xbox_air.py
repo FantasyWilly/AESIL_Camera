@@ -25,15 +25,15 @@ from camera_msg_pkg.msg import Camera, CameraData
 from camera_msg_pkg.msg import Laser, LaserData
 
 # ROS2 引用 Python 檔 (mine)
-import camera_tt30_pkg.camera_loop_command as loop_cm
-from camera_tt30_pkg.camera_communication import CommunicationController
-from camera_tt30_pkg.camera_decoder import ReceiveMsg
+import lib.camera_loop_command as loop_cm
+from lib.camera_communication import CommunicationController
+from lib.camera_decoder import ReceiveMsg
 
 # ---------- 基本參數(全域參數) ----------
 CAMERA_IP = "192.168.144.200"       # 相機控制 IP
 CAMERA_PORT = 2000                  # 相機控制 Port
 
-PROXY_LISTEN_IP = "0.0.0.0"   # 代理服務監聽的 IP
+PROXY_LISTEN_IP = "0.0.0.0"         # 代理服務監聽的 IP
 PROXY_LISTEN_PORT = 9999            # 代理服務監聽的埠號
 
 # 建立全域的 controller 與解析器物件

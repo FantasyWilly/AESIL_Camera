@@ -365,7 +365,7 @@ class YoloRtspRosNode(Node):
                     self.ffmpeg_rtsp_process.wait()
                     self.ffmpeg_rtsp_process = self.setup_rtsp_ffmpeg_process(annotated_frame.shape[1], annotated_frame.shape[0])
 
-                # **寫入檔案儲存的 FFmpeg 進程**
+                # 寫入檔案儲存的 FFmpeg 進程
                 try:
                     self.ffmpeg_file_process.stdin.write(annotated_frame.tobytes())
                 except (BrokenPipeError, IOError) as e:

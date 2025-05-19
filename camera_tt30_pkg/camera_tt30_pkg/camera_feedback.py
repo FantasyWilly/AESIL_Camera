@@ -18,10 +18,10 @@ import time
 import threading
 
 # ROS2 引用 Python 檔 (mine)
-import camera_tt30_pkg.camera_command as cm
-import camera_tt30_pkg.camera_loop_command  as loop_cm
-from camera_tt30_pkg.camera_communication import CommunicationController
-from camera_tt30_pkg.camera_decoder import ReceiveMsg
+import lib.camera_command as cm
+import lib.camera_loop_command  as loop_cm
+from lib.camera_communication import CommunicationController
+from lib.camera_decoder import ReceiveMsg
 
 # ----------------------- [main] 主要執行序 -----------------------
 def main():

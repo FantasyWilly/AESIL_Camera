@@ -2,7 +2,7 @@ import os
 from glob import glob
 from setuptools import find_packages, setup
 
-package_name = 'camera_tt30_pkg'
+package_name = 'target_position_pkg'
 
 setup(
     name=package_name,
@@ -24,9 +24,9 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'camera_feedback_ros2_node = camera_tt30_pkg.camera_feedback_ros2:main',
-            'camera_gui_ros2_node      = camera_tt30_pkg.camera_gui_ros2:main',
-            'xbox_air_node             = camera_tt30_pkg.xbox_air:main'
+            'laser_target_gps_node                 = target_position_pkg.laser_target_gps:main',
+            'vio_laser_target_gps_node             = target_position_pkg.vio_laser_target_gps:main',
+            'vio_laser_target_gps_fix_heading_node = target_position_pkg.vio_laser_target_gps_fix_heading:main',
         ],
     },
 )

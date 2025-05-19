@@ -26,10 +26,10 @@ from camera_msg_pkg.msg import Camera, CameraData
 from camera_msg_pkg.msg import Laser, LaserData
 
 # ROS2 引用 Python 檔 (mine)
-import camera_tt30_pkg.camera_command as cm
-import camera_tt30_pkg.camera_loop_command  as loop_cm
-from camera_tt30_pkg.camera_communication import CommunicationController
-from camera_tt30_pkg.camera_decoder import ReceiveMsg
+import lib.camera_command as cm
+import lib.camera_loop_command  as loop_cm
+from lib.camera_communication import CommunicationController
+from lib.camera_decoder import ReceiveMsg
 
 # ----------------------- [CameraFeedbackPublisher] ROS2 - [Node] & [TOPIC] -----------------------
 class CameraFeedbackPublisher(Node):
@@ -37,7 +37,7 @@ class CameraFeedbackPublisher(Node):
     # Topic(PUB) : /camera_data_pub
     # Topic(PUB) : /laser_data_pub
     def __init__(self):
-        super().__init__('camera_feedback_publisher_node')
+        super().__init__('camera_feedback_ros2_node')
         
         self.publisher_camera = self.create_publisher(Camera, '/camera_data_pub', 10)
         self.publisher_laser  = self.create_publisher(Laser, '/laser_data_pub', 10)

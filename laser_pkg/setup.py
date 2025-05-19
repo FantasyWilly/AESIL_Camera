@@ -1,8 +1,6 @@
-import os
-from glob import glob
 from setuptools import find_packages, setup
 
-package_name = 'camera_tt30_pkg'
+package_name = 'laser_pkg'
 
 setup(
     name=package_name,
@@ -12,8 +10,6 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        (os.path.join('share', package_name, 'launch'), glob('launch/*.py')),
-        (os.path.join('share', package_name, 'config'), glob('config/*.yaml')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -24,9 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'camera_feedback_ros2_node = camera_tt30_pkg.camera_feedback_ros2:main',
-            'camera_gui_ros2_node      = camera_tt30_pkg.camera_gui_ros2:main',
-            'xbox_air_node             = camera_tt30_pkg.xbox_air:main'
+            'extra_laser_node = laser_pkg.LRFX00M1LSQ:main',
         ],
     },
 )

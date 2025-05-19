@@ -25,10 +25,10 @@ from camera_msg_pkg.msg import Camera, CameraData
 from camera_msg_pkg.msg import Laser, LaserData
 
 # ROS2 引用 Python 檔 (mine)
-import camera_tt30_pkg.camera_command as cm
-import camera_tt30_pkg.camera_loop_command as loop_cm
-from camera_tt30_pkg.camera_communication import CommunicationController
-from camera_tt30_pkg.camera_decoder import ReceiveMsg
+import lib.camera_command as cm
+import lib.camera_loop_command as loop_cm
+from lib.camera_communication import CommunicationController
+from lib.camera_decoder import ReceiveMsg
 
 controller = CommunicationController("192.168.144.200", 2000)
 gimbal_msg = ReceiveMsg()
@@ -39,7 +39,7 @@ class CameraFeedbackPublisher(Node):
     # Topic(PUB) : /camera_data_pub
     # Topic(PUB) : /laser_data_pub
     def __init__(self):
-        super().__init__('camera_feedback_publisher_gui_node')
+        super().__init__('camera_gui_ros2_node')
 
         self.declare_parameter('gimbal_step', 50)
         self.declare_parameter('zoom_duration', 0.3)

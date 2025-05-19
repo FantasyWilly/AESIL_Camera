@@ -1,4 +1,4 @@
-camera_feedback_publisher_gui_node:
+xbox_air_node:
   ros__parameters:
     gimbal_step: 50
     zoom_duration: 0.3
