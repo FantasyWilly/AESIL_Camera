@@ -121,5 +121,5 @@ class GCUController:
             if self.ros2_publisher is not None:
 
                 ## 呼叫 gcu_ros2_publisher.py 裡的 publish_camera_data
-                self.ros2_publisher.publish_camera_data(parsed['roll'], parsed['pitch'], parsed['yaw'])
+                self.ros2_publisher.publish_camera_data(parsed['roll'], parsed['pitch'], parsed['yaw'], parsed['zoom'])
         return response

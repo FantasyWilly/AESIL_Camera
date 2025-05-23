@@ -25,12 +25,13 @@ class GCUPublisher(Node):
         self.publisher_camera = self.create_publisher(Camera, '/camera_data_pub', 10)
 
     # ----------------------- (publish_camera_data) 接收 Camera 資料 & 發布至ROS2 -----------------------
-    def publish_camera_data(self, roll: float, pitch: float, yaw: float):
+    def publish_camera_data(self, roll: float, pitch: float, yaw: float, zoom: float):
         camera_data = CameraData()
         camera_data.rollangle = roll
         camera_data.yawangle = yaw
         camera_data.pitchangle = pitch
-
+        camera_data.zoom_ratio = zoom
+        
         camera_msg = Camera()
         camera_msg.data = [camera_data]
 

@@ -68,12 +68,12 @@ class GCUController:
 
         # (1) 構建數據包並發送
         packet = build_packet(command, parameters, include_empty_command, enable_request, pitch=pitch, yaw=yaw)
-        print("發送 [數據包] :", packet.hex().upper())
+        # print("發送 [數據包] :", packet.hex().upper())
         self.sock.sendall(packet)
 
         # (2) 接收本次指令的回覆
         response = self.sock.recv(256)
-        print("接收 [返回數據] :", response.hex().upper())
+        # print("接收 [返回數據] :", response.hex().upper())
 
         # (3) 解碼本次指令回覆
         parsed = decode_gcu_response(response)

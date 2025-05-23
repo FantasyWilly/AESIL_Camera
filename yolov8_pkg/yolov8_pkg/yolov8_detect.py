@@ -75,7 +75,7 @@ class YoloRtspRosNode(Node):
         self.imgsz = 640                                                # **推論時的輸入影像大小 (imgsz x imgsz)**
         self.conf_thresh = 0.5                                          # **推論時的置信度閾值 (confidence threshold)**
 
-        self.camera_source = 'rtsp://user:user@192.168.144.108:554/cam/realmonitor?channel=1&subtype=0'               # ** RTSP 攝影機串流來源    **
+        self.camera_source = 'rtsp://user:user@192.168.168.108:554/cam/realmonitor?channel=1&subtype=0'               # ** RTSP 攝影機串流來源    **
         self.rtsp_server_url = 'rtsp://192.168.0.230:8554/live/stream'  # ** RTSP 伺服器輸出串流地址 **
         self.frame_rate = 25                                            # ** 串流的影格率 (FPS)     **
 

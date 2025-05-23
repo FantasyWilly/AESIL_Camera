@@ -12,6 +12,8 @@ Email  : bc697522h04@gmail.com
     B. 解碼 資料
 """
 
+import struct
+
 # ---------- (decode_gcu_response) TCP連接 ----------
 def decode_gcu_response(response: bytes) -> dict:
     """    
@@ -41,18 +43,18 @@ def decode_gcu_response(response: bytes) -> dict:
         data['error'] = f'協議頭錯誤: {header1:02X}{header2:02X}'
         return data
 
+    # ======================================================================
+
     # (3) 嘗試讀取 roll/pitch/yaw (Byte18~19, 20~21, 22~23)
-    import struct
-    
-    # 先切出 raw bytes
     roll_bytes  = response[18:20]   # 2 bytes
     pitch_bytes = response[20:22]   # 2 bytes
     yaw_bytes   = response[22:24]   # 2 bytes
 
-    # 有號 16-bit (S16): struct.unpack("<h") => big-endian 16位元有號
+    # 有號 16-bit (S16): struct.unpack("<h") => littel-endian 16位元有正負數
     roll_raw  = struct.unpack("<h", roll_bytes)[0]
     pitch_raw = struct.unpack("<h", pitch_bytes)[0]
-    # 無號 16-bit (U16): struct.unpack("<H") => big-endian 16位元無號
+
+    # 無號 16-bit (U16): struct.unpack("<H") => littel-endian 16位元無正負數
     yaw_raw   = struct.unpack("<H", yaw_bytes)[0]
 
     # 分辨率 0.01
@@ -60,9 +62,26 @@ def decode_gcu_response(response: bytes) -> dict:
     pitch_deg = pitch_raw * 0.01
     yaw_deg   = yaw_raw   * 0.01
 
+    # 添加 進 data 列表
     data['roll']  = roll_deg
     data['pitch'] = pitch_deg
     data['yaw']   = yaw_deg
 
-    # (4) 回傳
+    # ======================================================================
+
+    # (4) 嘗試讀取 相機倍率 (Byte59~60)
+    zoom_bytes =response[59:61]
+
+    # 無號 16-bit (U16): struct.unpack("<H") => littel-endian 16位元無正負數
+    zoom_ratio = struct.unpack("<H", zoom_bytes)[0]
+
+    # 分辨率 0.1
+    zoom_ratio = zoom_ratio * 0.1
+
+    # 添加 進 data 列表
+    data['zoom'] = zoom_ratio
+
+    # ======================================================================
+
+    # (5) 回傳 data 資料
     return data

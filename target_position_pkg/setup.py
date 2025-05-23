@@ -24,6 +24,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'target_gps_node                       = target_position_pkg.target_gps:main',
             'laser_target_gps_node                 = target_position_pkg.laser_target_gps:main',
             'vio_laser_target_gps_node             = target_position_pkg.vio_laser_target_gps:main',
             'vio_laser_target_gps_fix_heading_node = target_position_pkg.vio_laser_target_gps_fix_heading:main',

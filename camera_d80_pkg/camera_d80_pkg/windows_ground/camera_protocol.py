@@ -129,5 +129,5 @@ def build_packet(
 # 傳送空命令  
 def send_empty_command(sock: socket.socket) -> None:
     empty_packet = build_packet(command=0x00, parameters=b'', include_empty_command=True)
-    print("發送 [數據包] :", empty_packet.hex().upper())
+    # print("發送 [數據包] :", empty_packet.hex().upper())
     sock.sendall(empty_packet)

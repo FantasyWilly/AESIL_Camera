@@ -62,7 +62,7 @@ class YoloRtspRosNode(Node):
         self.declare_parameter('device', 'cuda:0')
         self.declare_parameter('imgsz', 640)
         self.declare_parameter('conf_thresh', 0.5)
-        self.declare_parameter('camera_source', 'rtsp://user:user@192.168.144.108:554/cam/realmonitor?channel=1&subtype=0')
+        self.declare_parameter('camera_source', 'rtsp://user:user@192.168.168.108:554/cam/realmonitor?channel=1&subtype=0')
         self.declare_parameter('rtsp_server_url', 'rtsp://192.168.0.230:8554/live/stream')
         self.declare_parameter('frame_rate', 30)
 
