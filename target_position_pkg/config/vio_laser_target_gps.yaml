@@ -1,0 +1,5 @@
+vio_laser_target_gps_node:
+  ros__parameters:
+    initial_lat: 23.4515234
+    initial_lon: 120.2862747
+    vio_pose_topic: '/mavros/vision_pose/pose'
